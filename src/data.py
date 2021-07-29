@@ -9,6 +9,12 @@ class Dataset():
 			filename = '{}/{}'.format(dirname, str(t))
 			self.graphs.append(self.load_graph(filename))
 
+	def __len__(self):
+		return self.graphs.__len__()
+
+	def __getitem__(self, idx):
+		return self.graphs.__getitem__(idx)
+
 	def load_graph(self, filename):
 		graph = gt.Graph()
 		f = open(filename, 'r')
