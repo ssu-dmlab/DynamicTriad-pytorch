@@ -62,9 +62,9 @@ class Model(torch.nn.Module):
 
 		iprod = x.dot(torch.expand_dims(self.theta, axis=1)) + self.beta # (batchsize_d, )
 		iprod = torch.clip(iprod, -50, 50)  # for numerical stability
-		logprob = torch.log(1 + K.exp(-iprod))
+		logprob = torch.log(1 + torch.exp(-iprod))
 
-		ltriag = K.mean(triag_float[:, 0] * iprod + logprob)
+		ltriag = torch.mean(triag_float[:, 0] * iprod + logprob)
 
 		loss = lprox + self.params['beta_smooth'] * lsmooth + self.params['beta_triad'] * ltriag
 
