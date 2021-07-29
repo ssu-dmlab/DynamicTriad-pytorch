@@ -1,1 +1,13 @@
+# hidden mac file
 .DS_Store
+
+# venv files
+bin/
+lib/
+pyvenv.cfg
+
+# pycache
+__pycache__/
+
+# for experiments
+src/experiments/
