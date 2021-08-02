@@ -1,5 +1,7 @@
 import torch
+import numpy as np
 from torch.autograd import Variable
+from loguru import logger
 
 class Model(torch.nn.Module):
 	def __init__(
@@ -8,7 +10,7 @@ class Model(torch.nn.Module):
 		timesteps,
 		emb_dim,
 		params={},
-		device=torch.device('cpu')
+		device='cpu'
 	):
 		super(Model, self).__init__()
 
@@ -16,22 +18,20 @@ class Model(torch.nn.Module):
 		self.timesteps = timesteps
 		self.emb_dim = emb_dim
 
-		self.embedding = Variable(
-			torch.randn(num_vertices, timesteps, emb_dim),
-			requires_grad=True,
-			device=device
-		)
-		self.theta = Variable(
-			torch.randn(emb_dim),
-			requires_grad=True,
-			device=device
-		)
-		self.beta = = Variable(
-			torch.randn(1),
-			requires_grad=True,
-			device=device
-		)
+		embedding = torch.randn(timesteps, num_vertices, emb_dim, dtype=torch.double)
+		theta = torch.randn(emb_dim, dtype=torch.double)
+		beta = torch.randn(1, dtype=torch.double)
 
+		if device == 'cuda':
+			embedding = embedding.cuda()
+			theta = theta.cuda()
+			beta = beta.cuda()
+
+		self.embedding = Variable(embedding, requires_grad=True)
+		self.theta = Variable(theta, requires_grad=True)
+		self.beta = Variable(beta, requires_grad=True)
+
+		self.params = {}
 		self.params['beta_triad'] = self.params.get('beta_triad', 1)
 		self.params['beta_smooth'] = self.params.get('beta_smooth', 1)
 
@@ -44,27 +44,36 @@ class Model(torch.nn.Module):
 		"""
 
 		# (batchsize, d) => (batchsize, )
-		dist_pos = embedding[data[:, 0], data[:, 1]] - embedding[data[:, 0], data[:, 2]]
+		dist_pos = self.embedding[data[:, 0], data[:, 1]] - self.embedding[data[:, 0], data[:, 2]]
 		dist_pos = torch.sum(dist_pos * dist_pos, axis=-1)
-		dist_neg = embedding[data[:, 0], data[:, 3]] - embedding[data[:, 0], data[:, 4]]
+		dist_neg = self.embedding[data[:, 0], data[:, 3]] - self.embedding[data[:, 0], data[:, 4]]
 		dist_neg = torch.sum(dist_neg * dist_neg, axis=-1)
 
-		lprox = torch.maximum(dist_pos - dist_neg + 1, 0) * weight
-		lprox = K.mean(lprox)
+		diff = dist_pos - dist_neg + 1
+		zero = dist_pos - dist_pos
+		maximum = torch.max(diff, zero)
+		lprox = maximum * torch.from_numpy(weight)
+		lprox = torch.mean(lprox)
 
-		lsmooth = embedding[1:] - embedding[:-1]  # (k - 1, nsize, d)
+		lsmooth = self.embedding[1:] - self.embedding[:-1]  # (k - 1, nsize, d)
 		lsmooth = torch.sum(torch.square(lsmooth), axis=-1)  # (k - 1, nsize)
 		lsmooth = torch.mean(lsmooth)
 
-		e1 = embedding[triag_int[:, 0], triag_int[:, 1]] - embedding[triag_int[:, 0], triag_int[:, 2]]  # (batchsize_t, d)
-		e2 = embedding[triag_int[:, 0], triag_int[:, 1]] - embedding[triag_int[:, 0], triag_int[:, 3]]
-		x = e1 * triag_float[:, 1, None] + e2 * triag_float[:, 2, None]
+		e1 = self.embedding[triag_int[:, 0], triag_int[:, 1]] - self.embedding[triag_int[:, 0], triag_int[:, 2]]  # (batchsize_t, d)
+		e2 = self.embedding[triag_int[:, 0], triag_int[:, 1]] - self.embedding[triag_int[:, 0], triag_int[:, 3]]
+		x = e1 * torch.from_numpy(triag_float)[:, 1, None] + e2 * torch.from_numpy(triag_float)[:, 2, None]
 
-		iprod = x.dot(torch.expand_dims(self.theta, axis=1)) + self.beta # (batchsize_d, )
+		repeated = self.theta.repeat(self.theta.shape[0], 1)
+
+		iprod = torch.mm(x, repeated)
+		iprod += self.beta # (batchsize_d, )
 		iprod = torch.clip(iprod, -50, 50)  # for numerical stability
 		logprob = torch.log(1 + torch.exp(-iprod))
 
-		ltriag = torch.mean(triag_float[:, 0] * iprod + logprob)
+		C = torch.from_numpy(triag_float)[:, 0]
+		C = C.view((C.shape[0], 1))
+
+		ltriag = torch.mean(C * iprod + logprob)
 
 		loss = lprox + self.params['beta_smooth'] * lsmooth + self.params['beta_triad'] * ltriag
 
@@ -80,3 +89,5 @@ class Model(torch.nn.Module):
 		pred = -torch.sum(torch.square(pred), axis=-1)  # the closer the more probable
 
 		return pred
+	def parameters(self, recurse=True):
+		return [self.embedding, self.theta, self.beta]

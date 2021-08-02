@@ -26,7 +26,7 @@ class Dataset():
 		return self.number2idx
 
 	def load_graph(self, filename):
-		graph = gt.Graph()
+		graph = gt.Graph(directed=False)
 		f = open(filename, 'r')
 
 		lines = f.readlines()
