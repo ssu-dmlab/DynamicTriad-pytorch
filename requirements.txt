@@ -1,3 +1,4 @@
 graph_tools
 loguru
 torch
+tqdm
