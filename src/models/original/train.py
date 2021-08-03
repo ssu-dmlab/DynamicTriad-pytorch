@@ -247,7 +247,7 @@ class Trainer:
 		w2 = graph.get_edge_weight(b, c)
 		x = (partial_embedding[c_i] - partial_embedding[a_i]) * w1 + (partial_embedding[c_i] - partial_embedding[b_i]) * w2
 
-		power = -np.dot(theta, x) + beta
+		power = -(np.dot(theta, x) + beta)
 
 		if power > 100:
 			return 0
