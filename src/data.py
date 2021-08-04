@@ -4,13 +4,14 @@ from loguru import logger
 class Dataset():
 	def __init__(self, dirname, time):
 		self.graphs = []
-		self.vertices = []
+		self._vertices = set()
 
 		for t in range(time):
 			logger.debug("loading {}th time step".format(t))
 			filename = '{}/{}'.format(dirname, str(t))
 			self.graphs.append(self.load_graph(filename))
 
+		self.vertices = list(self._vertices)
 		self.number2idx = {n: i for i, n in enumerate(self.vertices)}
 
 	def __len__(self):
@@ -18,12 +19,6 @@ class Dataset():
 
 	def __getitem__(self, idx):
 		return self.graphs.__getitem__(idx)
-
-	def all_vertices(self):
-		return self.vertices
-
-	def number_to_index(self):
-		return self.number2idx
 
 	def load_graph(self, filename):
 		graph = gt.Graph(directed=False)
@@ -34,8 +29,8 @@ class Dataset():
 			fields = line.split(' ')
 			n = int(fields[0])
 
-			if not n in self.vertices:
-				self.vertices.append(n)
+			if not n in self._vertices:
+				self._vertices.add(n)
 
 			if not graph.has_vertex(n):
 				graph.add_vertex(n)
@@ -47,8 +42,8 @@ class Dataset():
 				if v == n:
 					logger.warning("loopback edge ({}, {}) detected".format(v, n))
 
-				if not v in self.vertices:
-					self.vertices.append(v)
+				if not v in self._vertices:
+					self._vertices.add(v)
 
 				if not graph.has_vertex(v):
 					graph.add_vertex(v)
