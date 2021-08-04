@@ -1,12 +1,49 @@
+import sys
+from fire import Fire
 from loguru import logger
 from data import Dataset
-from models.original.model import Model
-from models.original.train import Trainer
-from models.original.eval import Evaluator
 
-dataset = Dataset('datasets/academic_toy', 36)
-model = Model(len(dataset.vertices), 35, 48)
-trainer = Trainer(model, dataset)
-trained_model = trainer.train()
-evaluator = Evaluator('link_reconstruction')
-logger.info(evaluator.evaluate(model, dataset))
+def main(
+	model='original',
+	dir='datasets',
+	dataset='academic_toy',
+	epochs=10,
+	lr=0.1,
+	timestep=36,
+	emb_dim=48,
+	beta_triad=1.0,
+	beta_smooth=1.0,
+	batchsize=1000,
+	mode='link_reconstruction',
+):
+
+	dataset = Dataset(dir + '/' + dataset, timestep)
+
+	if model == 'original':
+		from models.original.model import Model
+		from models.original.train import Trainer
+		from models.original.eval import Evaluator
+
+		model = Model(
+			len(dataset.vertices),
+			timestep-1,
+			emb_dim,
+			params={
+				'beta_triad': beta_triad,
+				'beta_smooth': beta_smooth
+			}
+		)
+		trainer = Trainer(model, dataset)
+		evaluator = Evaluator(mode)
+	else:
+		logger.error("no such model {}".format(model))
+		return None
+
+	trained_model = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize)
+	f1score = evaluator.evaluate(model, dataset)
+
+	logger.info(f1score)
+	return f1score
+
+if __name__ == "__main__":
+	Fire(main)
