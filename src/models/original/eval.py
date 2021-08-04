@@ -13,7 +13,7 @@ class Evaluator:
 			raise RuntimeError("Unkonwn task: {}".format(mode))
 
 	def evaluate_link_reconstruction(self, model, dataset):
-		samples, labels = self.sample_link_reconstruction(dataset)
+		samples, labels = self.sample_link_reconstruction(dataset, model.timesteps)
 
 		with torch.no_grad():
 			u1 = model.embedding[samples[:, 0], samples[:, 1]]
@@ -32,11 +32,14 @@ class Evaluator:
 
 		return np.mean(val_scores)
 
-	def sample_link_reconstruction(self, dataset, negdup=1):
+	def sample_link_reconstruction(self, dataset, timesteps, negdup=1):
 		positive_samples = []
 		negative_samples = []
 
 		for i, graph in enumerate(dataset):
+			if i >= timesteps:
+				break
+
 			for e in graph.edges():
 				e0_index = dataset.number2idx[e[0]]
 				e1_index = dataset.number2idx[e[1]]

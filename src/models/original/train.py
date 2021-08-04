@@ -75,6 +75,8 @@ class Trainer:
 		positive_samples, weight = [], []
 
 		for i, graph in enumerate(self.dataset):
+			if i >= self.model.timesteps:
+				break
 			assert graph.undirected()
 
 			for e in graph.edges():
@@ -125,7 +127,7 @@ class Trainer:
 		return negative_social_homophily_samples
 
 	def gen_triad_samples(self, positive_samples):
-		filtered_positive = [p for p in positive_samples if p[0] + 1 < len(self.dataset)]
+		filtered_positive = [p for p in positive_samples if p[0] + 1 < self.model.timesteps]
 		assert len(filtered_positive) > 0, "No possible triangular samples"
 
 		triad_data = []
