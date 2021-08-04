@@ -79,15 +79,5 @@ class Model(torch.nn.Module):
 
 		return loss
 
-	def predict(self, pred_data):
-		"""
-		:param pred_data: (batchsize, 2)  [timestep, nodeid]
-		"""
-
-		# (batchsize, nsize, d) => (batchsize, nsize)
-		pred = self.embedding[pred_data[:, 0] - 1, pred_data[:, 1]][:, None, :] - self.embedding[pred_data[:, 0] - 1]
-		pred = -torch.sum(torch.square(pred), axis=-1)  # the closer the more probable
-
-		return pred
 	def parameters(self, recurse=True):
 		return [self.embedding, self.theta, self.beta]

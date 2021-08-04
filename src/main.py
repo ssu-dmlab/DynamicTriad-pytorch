@@ -1,8 +1,12 @@
+from loguru import logger
 from data import Dataset
 from models.original.model import Model
 from models.original.train import Trainer
+from models.original.eval import Evaluator
 
-dataset = Dataset('../datasets/academic_toy', 18)
+dataset = Dataset('datasets/academic_toy', 18)
 model = Model(len(dataset.vertices), 18, 48)
 trainer = Trainer(model, dataset)
-trainer.train()
+trained_model = trainer.train()
+evaluator = Evaluator('link_reconstruction')
+logger.info(evaluator.evaluate(model, dataset))
