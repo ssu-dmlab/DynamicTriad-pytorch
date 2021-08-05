@@ -24,7 +24,10 @@ class Trainer:
 			data = []
 			for i in range(len(positive_samples)):
 				for j in range(0, len(negative_social_homophily_samples[i]), 2):
-					data.append(list(positive_samples[i]) + [negative_social_homophily_samples[i][j], negative_social_homophily_samples[i][j+1]])
+					d = list(positive_samples[i])
+					d.append(negative_social_homophily_samples[i][j])
+					d.append(negative_social_homophily_samples[i][j+1])
+					data.append(d)
 
 			data = np.array(data)
 
@@ -151,6 +154,7 @@ class Trainer:
 		next_graph = self.dataset[k + 1]
 		trycnt = 0
 		ret = None
+		filtered_neighbors = []
 
 		if random.randrange(2) == 0:  # target as key point
 			neighbors = graph.neighbors(target)
@@ -160,14 +164,14 @@ class Trainer:
 
 			new_source = random.choice(neighbors)
 
-			while new_source == target or new_source == source or not graph.has_edge(target, new_source) or not graph.has_edge(source, new_source):
+			while not self.is_triad(source, target, new_source, graph):
 				if trycnt >= 5:
 					break
 				new_source = random.choice(neighbors)
 				trycnt += 1
 
 			if trycnt >= 5:
-				filtered_neighbors = [n for n in neighbors if n != source and n != target and not graph.has_edge(n, source)]
+				filtered_neighbors = [n for n in neighbors if self.is_triad(source, target, n, graph)]
 				if len(filtered_neighbors) <= 0:
 					return None
 				new_source = random.choice(filtered_neighbors)
@@ -189,14 +193,14 @@ class Trainer:
 
 			new_target = random.choice(neighbors)
 
-			while new_target == source or new_target == target or not graph.has_edge(source, new_target) or not graph.has_edge(target, new_target):
+			while not self.is_triad(source, target, new_target, graph):
 				if trycnt >= 5:
 					break
 				new_target = random.choice(neighbors)
 				trycnt += 1
 
 			if trycnt >= 5:
-				filtered_neighbors = [n for n in neighbors if n != target and n != source and not graph.has_edge(n, target)]
+				filtered_neighbors = [n for n in neighbors if self.is_triad(source, target, n, graph)]
 				if len(filtered_neighbors) <= 0:
 					return None
 				new_target = random.choice(filtered_neighbors)
@@ -213,6 +217,17 @@ class Trainer:
 
 		assert len(set(ret[1:4])) == 3 and ret[5] > 0 and ret[6] > 0, ret
 		return ret
+
+	def is_triad(self, i, j, k, graph):
+		if i == k:
+			return False
+		if j == k:
+			return False
+		if not graph.has_edge(i, k):
+			return False
+		if not graph.has_edge(j, k):
+			return False
+		return True
 
 	def calculate_EM_coefficient(self, triad_data):
 		embedding = self.model.embedding.detach().to('cpu').numpy()
@@ -236,7 +251,15 @@ class Trainer:
 				neighbors_j = set(graph.neighbors(j))
 				neighbors_common = neighbors_i.intersection(neighbors_j)
 
-				C1 = 1 - np.prod([1 - self.P(i, i_index, j, j_index, v, self.dataset.number2idx[v], partial_embedding, theta, beta, graph) for v in neighbors_common])
+				C1 = 1 - np.prod([
+					1 - self.P(
+						i, i_index,
+						j, j_index,
+						v, self.dataset.number2idx[v],
+						partial_embedding, theta, beta,
+						graph
+					) for v in neighbors_common
+				])
 				C = 1 - C0 / (C1 + 1e-6)
 
 			emcoef_int.append([time_step, k_index, i_index, j_index])
@@ -247,7 +270,9 @@ class Trainer:
 	def P(self, a, a_i, b, b_i, c, c_i, partial_embedding, theta, beta, graph):
 		w1 = graph.get_edge_weight(a, c)
 		w2 = graph.get_edge_weight(b, c)
-		x = (partial_embedding[c_i] - partial_embedding[a_i]) * w1 + (partial_embedding[c_i] - partial_embedding[b_i]) * w2
+		c_a = partial_embedding[c_i] - partial_embedding[a_i]
+		c_b = partial_embedding[c_i] - partial_embedding[b_i]
+		x = c_a * w1 + c_b * w2
 
 		power = -(np.dot(theta, x) + beta)
 
