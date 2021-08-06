@@ -15,6 +15,9 @@ class Trainer:
 		optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 		positive_samples, weight = self.gen_positive_samples()
 
+		total_batches = math.ceil(positive_samples.shape[0]/batchsize)
+		logger.debug(total_batches)
+
 		pbar = tqdm(range(epochs), position=0, leave=False, desc='epoch')
 		for epoch in pbar:
 			negative_social_homophily_samples = self.gen_social_homophily_samples(positive_samples)
@@ -32,7 +35,6 @@ class Trainer:
 			data = np.array(data)
 
 			ave_loss = 0
-			total_batches = math.ceil(len(positive_samples/batchsize))
 
 			pbar2 = tqdm(
 				self.gen_batches(data, weight, emcoef_int, emcoef_float, batchsize),
@@ -53,7 +55,7 @@ class Trainer:
 
 				ave_loss += loss / total_batches
 
-			pbar.write('Epoch {:02}: {:.4} training loss'.format(epoch, loss.item()))
+			pbar.write('Epoch {:02}: {:.4} training loss'.format(epoch, ave_loss.item()))
 			pbar.update()
 
 		pbar.close()

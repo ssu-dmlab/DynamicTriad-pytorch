@@ -17,6 +17,8 @@ def main(
 	mode='link_reconstruction',
 ):
 
+
+	logger.debug("loading dataset")
 	dataset = Dataset(dir + '/' + dataset, timestep)
 
 	if model == 'original':

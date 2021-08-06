@@ -7,7 +7,6 @@ class Dataset():
 		self._vertices = set()
 
 		for t in range(time):
-			logger.debug("loading {}th time step".format(t))
 			filename = '{}/{}'.format(dirname, str(t))
 			self.graphs.append(self.load_graph(filename))
 
