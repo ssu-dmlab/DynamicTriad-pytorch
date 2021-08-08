@@ -16,7 +16,7 @@ class Trainer:
 		positive_samples, weight = self.gen_positive_samples()
 
 		total_batches = math.ceil(positive_samples.shape[0]/batchsize)
-		logger.debug(total_batches)
+		logger.debug('total_batches: {}'.format(total_batches))
 
 		pbar = tqdm(range(epochs), position=0, leave=False, desc='epoch')
 		for epoch in pbar:
@@ -38,7 +38,7 @@ class Trainer:
 
 			pbar2 = tqdm(
 				self.gen_batches(data, weight, emcoef_int, emcoef_float, batchsize),
-				position=1, leave=False, desc='batch'
+				total=total_batches, position=1, leave=False, desc='batch'
 			)
 			for batch in pbar2:
 				data_batch, weight_batch, emcoef_int_batch, emcoef_float_batch = batch
@@ -55,8 +55,7 @@ class Trainer:
 
 				ave_loss += loss / total_batches
 
-			pbar.write('Epoch {:02}: {:.4} training loss'.format(epoch, ave_loss.item()))
-			pbar.update()
+			logger.info('Epoch {:02}: {:.4} training loss'.format(epoch, ave_loss.item()))
 
 		pbar.close()
 
