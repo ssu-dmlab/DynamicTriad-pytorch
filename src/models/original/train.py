@@ -88,7 +88,7 @@ class Trainer:
 				if source > target:
 					source, target = target, source
 
-				positive_samples.append([i, self.dataset.number2idx[source], self.dataset.number2idx[target]])
+				positive_samples.append([i, self.dataset.vertex2index[source], self.dataset.vertex2index[target]])
 				weight.append(graph.get_edge_weight(source, target))
 
 		positive_samples = np.array(positive_samples, dtype='int32')
@@ -111,14 +111,14 @@ class Trainer:
 					new_source = random.choice(graph.vertices())
 					while graph.has_edge(new_source, target):
 						new_source = random.choice(graph.vertices())
-					new_source_index = self.dataset.number2idx[new_source]
+					new_source_index = self.dataset.vertex2index[new_source]
 					social_homophily_sample.extend([new_source_index, target_index])
 
 				else:  # replace target
 					new_target = random.choice(graph.vertices())
 					while graph.has_edge(source, new_target):
 						new_target = random.choice(graph.vertices())
-					new_target_index = self.dataset.number2idx[new_target]
+					new_target_index = self.dataset.vertex2index[new_target]
 					social_homophily_sample.extend([source_index, new_target_index])
 
 			negative_social_homophily_samples.append(social_homophily_sample)
@@ -181,7 +181,7 @@ class Trainer:
 				k,
 				target_index,
 				source_index,
-				self.dataset.number2idx[new_source],
+				self.dataset.vertex2index[new_source],
 				next_graph.has_edge(source, new_source),
 				graph.get_edge_weight(target, source),
 				graph.get_edge_weight(target, new_source)
@@ -210,7 +210,7 @@ class Trainer:
 				k,
 				source_index,
 				target_index,
-				self.dataset.number2idx[new_target],
+				self.dataset.vertex2index[new_target],
 				next_graph.has_edge(target, new_target),
 				graph.get_edge_weight(source, target),
 				graph.get_edge_weight(source, new_target)
@@ -256,7 +256,7 @@ class Trainer:
 					1 - self.P(
 						i, i_index,
 						j, j_index,
-						v, self.dataset.number2idx[v],
+						v, self.dataset.vertex2index[v],
 						partial_embedding, theta, beta,
 						graph
 					) for v in neighbors_common

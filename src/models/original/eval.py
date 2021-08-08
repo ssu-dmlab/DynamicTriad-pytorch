@@ -41,8 +41,8 @@ class Evaluator:
 				break
 
 			for e in graph.edges():
-				e0_index = dataset.number2idx[e[0]]
-				e1_index = dataset.number2idx[e[1]]
+				e0_index = dataset.vertex2index[e[0]]
+				e1_index = dataset.vertex2index[e[1]]
 				positive_samples.append([i, e0_index, e1_index])
 
 		for _ in range(negdup):

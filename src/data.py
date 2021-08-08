@@ -12,7 +12,7 @@ class Dataset():
 			self.graphs.append(self.load_graph(filename))
 
 		self.vertices = list(self._vertices)
-		self.number2idx = {n: i for i, n in enumerate(self.vertices)}
+		self.vertex2index = {n: i for i, n in enumerate(self.vertices)}
 
 		self.feature_dimension = None
 
