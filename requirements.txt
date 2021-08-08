@@ -4,3 +4,6 @@ torch
 tqdm
 sklearn
 fire
+pandas
+gensim
+nltk
