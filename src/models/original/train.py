@@ -7,9 +7,10 @@ from loguru import logger
 from models.original.model import Model
 
 class Trainer:
-	def __init__(self, model, dataset):
+	def __init__(self, model, dataset, evaluator=None):
 		self.model = model
 		self.dataset = dataset
+		self.evaluator = evaluator
 
 	def train(self, lr=0.1, epochs=10, batchsize=1000, negdup=1):
 		optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
@@ -56,6 +57,9 @@ class Trainer:
 				ave_loss += loss / total_batches
 
 			logger.info('Epoch {:02}: {:.4} training loss'.format(epoch, ave_loss.item()))
+
+			if self.evaluator is not None:
+				logger.info('f1 score is {}'.format(self.evaluator.evaluate(self.model, self.dataset)))
 
 		pbar.close()
 

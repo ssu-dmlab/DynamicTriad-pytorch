@@ -35,14 +35,15 @@ def main(
 				'beta_smooth': beta_smooth
 			}
 		)
-		trainer = Trainer(model, dataset)
+
 		evaluator = Evaluator(mode)
+		trainer = Trainer(model, dataset, evaluator)
 	else:
 		logger.error("no such model {}".format(model))
 		return None
 
 	trained_model = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize)
-	f1score = evaluator.evaluate(model, dataset)
+	f1score = evaluator.evaluate(trained_model, dataset)
 
 	logger.info(f1score)
 	return f1score
