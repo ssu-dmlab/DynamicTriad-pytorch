@@ -98,30 +98,9 @@ class Trainer:
 		return positive_samples, weight
 
 	def gen_social_homophily_samples(self, positive_samples, negdup=1):
-		negative_social_homophily_samples = []
-
-		for k, source_index, target_index in positive_samples:
-			source = self.dataset.vertices[source_index]
-			target = self.dataset.vertices[target_index]
-			graph = self.dataset[k]
-			social_homophily_sample = []
-
-			for _ in range(negdup):
-				if random.randrange(2) == 0:  # replace source
-					new_source = random.choice(graph.vertices())
-					while graph.has_edge(new_source, target):
-						new_source = random.choice(graph.vertices())
-					new_source_index = self.dataset.vertex2index[new_source]
-					social_homophily_sample.extend([new_source_index, target_index])
-
-				else:  # replace target
-					new_target = random.choice(graph.vertices())
-					while graph.has_edge(source, new_target):
-						new_target = random.choice(graph.vertices())
-					new_target_index = self.dataset.vertex2index[new_target]
-					social_homophily_sample.extend([source_index, new_target_index])
-
-			negative_social_homophily_samples.append(social_homophily_sample)
+		negative_social_homophily_samples = [
+			self.gen_single_homophily_sample(positive_sample, negdup) for positive_sample in positive_samples
+		]
 
 		negative_social_homophily_samples = np.array(negative_social_homophily_samples)
 		error_message = "wrong negative samples:{}, {}".format(
@@ -129,6 +108,34 @@ class Trainer:
 		)
 		assert negative_social_homophily_samples.shape == (len(positive_samples), 2 * negdup), error_message
 		return negative_social_homophily_samples
+
+	def gen_single_homophily_sample(self, positive_sample, negdup=1):
+		k, source_index, target_index = positive_sample
+
+		source = self.dataset.vertices[source_index]
+		target = self.dataset.vertices[target_index]
+		graph = self.dataset[k]
+
+		social_homophily_sample = []
+
+		#vertices = graph.vertices()
+
+		for _ in range(negdup):
+			if random.randrange(2) == 0:  # replace source
+				new_source = random.choice(self.dataset.vertices)
+				while graph.has_edge(new_source, target):
+					new_source = random.choice(self.dataset.vertices)
+				new_source_index = self.dataset.vertex2index[new_source]
+				social_homophily_sample.extend([new_source_index, target_index])
+
+			else:  # replace target
+				new_target = random.choice(self.dataset.vertices)
+				while graph.has_edge(source, new_target):
+					new_target = random.choice(self.dataset.vertices)
+				new_target_index = self.dataset.vertex2index[new_target]
+				social_homophily_sample.extend([source_index, new_target_index])
+
+		return social_homophily_sample
 
 	def gen_triad_samples(self, positive_samples):
 		filtered_positive = [p for p in positive_samples if p[0] + 1 < self.model.timesteps]
