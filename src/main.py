@@ -6,20 +6,22 @@ from data import Dataset
 def main(
 	model='original',
 	dir='datasets',
-	dataset='academic_toy',
+	dataset='academic',
 	epochs=10,
 	lr=0.1,
-	timestep=36,
+	time_length=36,
+	time_step=4,
+	time_stride=2,
 	emb_dim=48,
 	beta_triad=1.0,
 	beta_smooth=1.0,
-	batchsize=1000,
+	batchsize=10000,
 	mode='link_reconstruction',
 ):
 
 
 	logger.debug("loading dataset")
-	dataset = Dataset(dir + '/' + dataset, timestep)
+	dataset = Dataset(dir + '/' + dataset, time_length, time_step, time_stride)
 
 	if model == 'original':
 		from models.original.model import Model
@@ -28,7 +30,7 @@ def main(
 
 		model = Model(
 			len(dataset.vertices),
-			timestep-1,
+			len(dataset)-1,
 			emb_dim,
 			params={
 				'beta_triad': beta_triad,

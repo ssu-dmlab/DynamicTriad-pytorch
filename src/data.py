@@ -3,13 +3,18 @@ from loguru import logger
 import numpy as np
 
 class Dataset():
-	def __init__(self, dirname, time, load_feature=False):
+	def __init__(self, dirname, time, step=1, stride=1, load_feature=False):
 		self.graphs = []
 		self._vertices = set()
+		unmerged_graphs = []
 
 		for t in range(time):
 			filename = '{}/{}'.format(dirname, str(t))
-			self.graphs.append(self.load_graph(filename))
+			unmerged_graphs.append(self.load_graph(filename))
+
+		for t in range(0, time - step + 1, stride):
+			merged_graph = self.merge(unmerged_graphs[t : t + stride])
+			self.graphs.append(merged_graph)
 
 		self.vertices = list(self._vertices)
 		self.vertex2index = {n: i for i, n in enumerate(self.vertices)}
@@ -70,6 +75,26 @@ class Dataset():
 
 		f.close()
 		return graph
+
+	def merge(self, graphs):
+		ret = gt.Graph(directed=False)
+
+		for g in graphs:
+			for v0, v1 in g.edges():
+				w = g.get_edge_weight(v0, v1)
+
+				if not ret.has_vertex(v0):
+					ret.add_vertex(v0)
+				if not ret.has_vertex(v1):
+					ret.add_vertex(v1)
+				if not ret.has_edge(v0, v1):
+					ret.add_edge(v0, v1)
+					ret.set_edge_weight(v0, v1, w)
+				else:
+					new_w = w + ret.get_edge_weight(v0, v1)
+					ret.set_edge_weight(v0, v1, new_w)
+
+		return ret
 
 	def load_feature(self, filename):
 		file = open(filename, 'r')
