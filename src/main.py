@@ -8,7 +8,6 @@ def main(
 	dir='datasets',
 	dataset='academic',
 	device='cpu',
-	use_mp=False,
 	epochs=10,
 	lr=0.1,
 	time_length=36,
@@ -18,6 +17,8 @@ def main(
 	beta_triad=1.0,
 	beta_smooth=1.0,
 	batchsize=10000,
+	use_mp=False,
+	batdup=1,
 	mode='link_reconstruction',
 ):
 
@@ -46,7 +47,7 @@ def main(
 		logger.error("no such model {}".format(model))
 		return None
 
-	trained_model = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize, use_mp=use_mp)
+	trained_model = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize, use_mp=use_mp, batdup=batdup)
 	f1score = evaluator.evaluate(trained_model, dataset)
 
 	logger.info(f1score)

@@ -14,7 +14,7 @@ class Trainer:
 		self.device = device
 		self.evaluator = evaluator
 
-	def train(self, lr=0.1, epochs=10, batchsize=1000, negdup=1, use_mp=False):
+	def train(self, lr=0.1, epochs=10, batchsize=1000, negdup=1, use_mp=False, batdup=1):
 		optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 		positive_samples, weight = self.gen_positive_samples()
 
@@ -41,34 +41,34 @@ class Trainer:
 
 			data = np.array(data)
 
-			ave_loss = 0
+			for _ in tqdm(range(batdup), position=1, leave=False, desc='batdup'):
+				ave_loss = 0
 
-			pbar2 = tqdm(
-				self.gen_batches(data, weight, emcoef_int, emcoef_float, batchsize),
-				total=total_batches, position=1, leave=False, desc='batch'
-			)
-			for batch in pbar2:
-				data_batch, weight_batch, emcoef_int_batch, emcoef_float_batch = batch
-
-				data_batch = torch.tensor(data_batch, device=self.device)
-				weight_batch = torch.tensor(weight_batch, device=self.device)
-				emcoef_int_batch = torch.tensor(emcoef_int_batch, device=self.device)
-				emcoef_float_batch = torch.tensor(emcoef_float_batch, device=self.device)
-
-				optimizer.zero_grad()
-				loss = self.model(
-					data_batch,
-					weight_batch,
-					emcoef_int_batch,
-					emcoef_float_batch
+				pbar2 = tqdm(
+					self.gen_batches(data, weight, emcoef_int, emcoef_float, batchsize),
+					total=total_batches, position=2, leave=False, desc='batch'
 				)
-				loss.backward()
-				optimizer.step()
+				for batch in pbar2:
+					data_batch, weight_batch, emcoef_int_batch, emcoef_float_batch = batch
 
-				ave_loss += loss / total_batches
+					data_batch = torch.tensor(data_batch, device=self.device)
+					weight_batch = torch.tensor(weight_batch, device=self.device)
+					emcoef_int_batch = torch.tensor(emcoef_int_batch, device=self.device)
+					emcoef_float_batch = torch.tensor(emcoef_float_batch, device=self.device)
+
+					optimizer.zero_grad()
+					loss = self.model(
+						data_batch,
+						weight_batch,
+						emcoef_int_batch,
+						emcoef_float_batch
+					)
+					loss.backward()
+					optimizer.step()
+
+					ave_loss += loss / total_batches
 
 			logger.info('Epoch {:02}: {:.4} training loss'.format(epoch, ave_loss.item()))
-
 			if self.evaluator is not None:
 				logger.info('f1 score is {}'.format(self.evaluator.evaluate(self.model, self.dataset)))
 
