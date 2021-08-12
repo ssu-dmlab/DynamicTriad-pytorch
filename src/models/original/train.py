@@ -4,7 +4,6 @@ import random
 import numpy as np
 from tqdm import tqdm
 from loguru import logger
-from multiprocessing import Pool
 from models.original.model import Model
 
 class Trainer:
@@ -14,7 +13,7 @@ class Trainer:
 		self.device = device
 		self.evaluator = evaluator
 
-	def train(self, lr=0.1, epochs=10, batchsize=1000, negdup=1, use_mp=False, batdup=1):
+	def train(self, lr=0.1, epochs=10, batchsize=1000, negdup=1, batdup=1):
 		optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 		positive_samples, weight = self.gen_positive_samples()
 
@@ -23,11 +22,7 @@ class Trainer:
 
 		pbar = tqdm(range(epochs), position=0, leave=False, desc='epoch')
 		for epoch in pbar:
-			negative_social_homophily_samples = self.gen_social_homophily_samples(
-				positive_samples,
-				negdup=negdup,
-				use_mp=use_mp
-			)
+			negative_social_homophily_samples = self.gen_social_homophily_samples(positive_samples, negdup=negdup)
 			triad_data = self.gen_triad_samples(positive_samples)
 			emcoef_int, emcoef_float = self.calculate_EM_coefficient(triad_data)
 
@@ -112,15 +107,10 @@ class Trainer:
 		assert len(positive_samples) > 0, "No positive sample is generated given an empty graph"
 		return positive_samples, weight
 
-	def gen_social_homophily_samples(self, positive_samples, negdup=1, use_mp=False, chunk_size=3000):
-		if use_mp:
-			assert negdup == 1
-			with Pool() as p:
-				negative_social_homophily_samples = p.map(self.gen_single_homophily_sample, positive_samples, chunk_size)
-		else:
-			negative_social_homophily_samples = [
-				self.gen_single_homophily_sample(positive_sample, negdup) for positive_sample in positive_samples
-			]
+	def gen_social_homophily_samples(self, positive_samples, negdup=1, chunk_size=3000):
+		negative_social_homophily_samples = [
+			self.gen_single_homophily_sample(positive_sample, negdup) for positive_sample in positive_samples
+		]
 
 		negative_social_homophily_samples = np.array(negative_social_homophily_samples)
 		error_message = "wrong negative samples:{}, {}".format(
