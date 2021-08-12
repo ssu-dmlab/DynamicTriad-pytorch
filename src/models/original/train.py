@@ -7,9 +7,10 @@ from loguru import logger
 from models.original.model import Model
 
 class Trainer:
-	def __init__(self, model, dataset, evaluator=None):
+	def __init__(self, model, dataset, device='cpu', evaluator=None):
 		self.model = model
 		self.dataset = dataset
+		self.device = device
 		self.evaluator = evaluator
 
 	def train(self, lr=0.1, epochs=10, batchsize=1000, negdup=1):
@@ -43,6 +44,11 @@ class Trainer:
 			)
 			for batch in pbar2:
 				data_batch, weight_batch, emcoef_int_batch, emcoef_float_batch = batch
+
+				data_batch = torch.tensor(data_batch, device=self.device)
+				weight_batch = torch.tensor(weight_batch, device=self.device)
+				emcoef_int_batch = torch.tensor(emcoef_int_batch, device=self.device)
+				emcoef_float_batch = torch.tensor(emcoef_float_batch, device=self.device)
 
 				optimizer.zero_grad()
 				loss = self.model(

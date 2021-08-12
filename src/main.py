@@ -5,6 +5,7 @@ from data import Dataset
 
 def main(
 	model='original',
+  device='cpu',
 	dir='datasets',
 	dataset='academic',
 	epochs=10,
@@ -18,7 +19,6 @@ def main(
 	batchsize=10000,
 	mode='link_reconstruction',
 ):
-
 
 	logger.debug("loading dataset")
 	dataset = Dataset(dir + '/' + dataset, time_length, time_step, time_stride)
@@ -35,11 +35,12 @@ def main(
 			params={
 				'beta_triad': beta_triad,
 				'beta_smooth': beta_smooth
-			}
+			},
+			device=device
 		)
 
 		evaluator = Evaluator(mode)
-		trainer = Trainer(model, dataset, evaluator)
+		trainer = Trainer(model, dataset, device, evaluator)
 	else:
 		logger.error("no such model {}".format(model))
 		return None

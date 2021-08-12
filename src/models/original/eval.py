@@ -18,7 +18,7 @@ class Evaluator:
 		with torch.no_grad():
 			u1 = model.embedding[samples[:, 0], samples[:, 1]]
 			u2 = model.embedding[samples[:, 0], samples[:, 2]]
-			features = torch.abs(u1 - u2)
+			features = torch.abs(u1 - u2).cpu()
 
 		val_scores = []
 		cv = StratifiedKFold(n_splits=2, shuffle=True)

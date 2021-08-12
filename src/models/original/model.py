@@ -14,6 +14,8 @@ class Model(torch.nn.Module):
 	):
 		super(Model, self).__init__()
 
+		self.device = device
+
 		self.num_vertices = num_vertices
 		self.timesteps = timesteps
 		self.emb_dim = emb_dim
@@ -52,7 +54,7 @@ class Model(torch.nn.Module):
 		diff = dist_pos - dist_neg + 1
 		zero = dist_pos - dist_pos
 		maximum = torch.max(diff, zero)
-		lprox = maximum * torch.from_numpy(weight)
+		lprox = maximum * weight
 		lprox = torch.mean(lprox)
 
 		lsmooth = self.embedding[1:] - self.embedding[:-1]  # (k - 1, nsize, d)
@@ -61,7 +63,7 @@ class Model(torch.nn.Module):
 
 		e1 = self.embedding[triag_int[:, 0], triag_int[:, 1]] - self.embedding[triag_int[:, 0], triag_int[:, 2]]  # (batchsize_t, d)
 		e2 = self.embedding[triag_int[:, 0], triag_int[:, 1]] - self.embedding[triag_int[:, 0], triag_int[:, 3]]
-		x = e1 * torch.from_numpy(triag_float)[:, 1, None] + e2 * torch.from_numpy(triag_float)[:, 2, None]
+		x = e1 * triag_float[:, 1, None] + e2 * triag_float[:, 2, None]
 
 		repeated = self.theta.repeat(self.theta.shape[0], 1)
 
@@ -70,7 +72,7 @@ class Model(torch.nn.Module):
 		iprod = torch.clip(iprod, -50, 50)  # for numerical stability
 		logprob = torch.log(1 + torch.exp(-iprod))
 
-		C = torch.from_numpy(triag_float)[:, 0]
+		C = triag_float[:, 0]
 		C = C.view((C.shape[0], 1))
 
 		ltriag = torch.mean(C * iprod + logprob)
