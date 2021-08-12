@@ -5,9 +5,10 @@ from data import Dataset
 
 def main(
 	model='original',
-  device='cpu',
 	dir='datasets',
 	dataset='academic',
+	device='cpu',
+	use_mp=False,
 	epochs=10,
 	lr=0.1,
 	time_length=36,
@@ -45,7 +46,7 @@ def main(
 		logger.error("no such model {}".format(model))
 		return None
 
-	trained_model = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize)
+	trained_model = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize, use_mp=use_mp)
 	f1score = evaluator.evaluate(trained_model, dataset)
 
 	logger.info(f1score)
