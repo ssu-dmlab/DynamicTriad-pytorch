@@ -2,7 +2,7 @@ import math
 import torch
 import random
 import numpy as np
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from loguru import logger
 from models.original.model import Model
 
