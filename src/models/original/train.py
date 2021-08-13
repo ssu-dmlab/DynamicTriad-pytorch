@@ -13,7 +13,7 @@ class Trainer:
 		self.device = device
 		self.evaluator = evaluator
 
-	def train(self, lr=0.1, epochs=10, batchsize=1000, negdup=1, batdup=1):
+	def train(self, lr=0.1, epochs=10, batchsize=1000, negdup=1, batdup=1, batchtqdm=True):
 		optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 		positive_samples, weight = self.gen_positive_samples()
 
@@ -39,10 +39,14 @@ class Trainer:
 			for _ in tqdm(range(batdup), position=1, leave=False, desc='batdup'):
 				ave_loss = 0
 
-				pbar2 = tqdm(
-					self.gen_batches(data, weight, emcoef_int, emcoef_float, batchsize),
-					total=total_batches, position=2, leave=False, desc='batch'
-				)
+				if batchtqdm:
+					pbar2 = tqdm(
+						self.gen_batches(data, weight, emcoef_int, emcoef_float, batchsize),
+						total=total_batches, position=2, leave=False, desc='batch'
+					)
+				else:
+					pbar2 = self.gen_batches(data, weight, emcoef_int, emcoef_float, batchsize)
+
 				for batch in pbar2:
 					data_batch, weight_batch, emcoef_int_batch, emcoef_float_batch = batch
 

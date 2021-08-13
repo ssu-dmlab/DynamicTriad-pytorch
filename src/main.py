@@ -18,6 +18,7 @@ def main(
 	beta_smooth=1.0,
 	batchsize=10000,
 	batdup=1,
+	batchtqdm=True,
 	mode='link_reconstruction',
 ):
 
@@ -46,7 +47,7 @@ def main(
 		logger.error("no such model {}".format(model))
 		return None
 
-	trained_model = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize, batdup=batdup)
+	trained_model = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize, batdup=batdup, batchtqdm=batchtqdm)
 	f1score = evaluator.evaluate(trained_model, dataset)
 
 	logger.info(f1score)
