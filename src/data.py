@@ -13,7 +13,7 @@ class Dataset():
 			unmerged_graphs.append(self.load_graph(filename))
 
 		for t in range(0, time - step + 1, stride):
-			merged_graph = self.merge(unmerged_graphs[t : t + stride])
+			merged_graph = self.merge(unmerged_graphs[t : t + step])
 			self.graphs.append(merged_graph)
 
 		self.vertices = list(self._vertices)
