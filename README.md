@@ -13,7 +13,7 @@ and enron dataset preprocessing method is proposed by us.
 
 Note: Enron dataset is too big to upload to repository so there is only preprocessing source code.
 To use enron dataset download [emails.csv](https://www.kaggle.com/wcukierski/enron-email-dataset/download)
-and run `python datasets/enron_preprocessor.py` to generate dataset.
+into `dataset` and run `datasets/enron_preprocessor.py` to generate dataset.
 
 ## Differences between original implementation and this
 
@@ -50,25 +50,25 @@ python src/main.py \
 
 | **Option** | **Description** | **Default** |
 |:--- | :--- | :---: |
-| `model` | Which model to use ( only `original` is implemented currently) | `original` |
+| `model` | Which model to use (only `original` is implemented currently) | `original` |
 | `dir` | Directory where dataset is located | `datasets`|
 |`dataset`| Dataset to train (among `academic`, `academic_toy`, `enron`) | `academic`|
 | `device` | Torch device to use (`cpu` or `cuda`) | `cpu`|
 | `epochs` | Number of training epochs | 10 |
 | `lr` | Learning Rate | 0.1 |
-| `time_length` | time length to load from raw dataset | 36 |
-| `time_step` | time step to merge from raw dataset | 4 |
-| `time_stride` | time stride to jump time when merge from raw dataset | 2 |
-| `emb_dim` | embedding dimension | 48 |
-| `beta_triad` | hyperparameter for triad loss | 1.0 |
-| `beta_smooth` | hyperparameter for smoothness loss | 1.0 |
-| `batchsize` | batch size | 10000 |
-| `batdup` | batch duplication, hyperparameter to reuse same sample | 1 |
-| `mode` | evaluation mode: `{,change_}link_{reconstruction,prediction}` | `link_reconstruction` |
+| `time_length` | Time length to load from raw dataset | 36 |
+| `time_step` | Time step to merge from raw dataset | 4 |
+| `time_stride` | Time stride to jump time when merge from raw dataset | 2 |
+| `emb_dim` | Embedding dimension | 48 |
+| `beta_triad` | Hyperparameter for triad loss | 1.0 |
+| `beta_smooth` | Hyperparameter for smoothness loss | 1.0 |
+| `batchsize` | Batch size | 10000 |
+| `batdup` | Batch duplication, hyperparameter to reuse same sample | 1 |
+| `mode` | Evaluation mode: `{,change_}link_{reconstruction,prediction}` | `link_reconstruction` |
 
 ## Merge example
 
-if time length is 16, time step is 4, time stride is 2, dataset is merged as below:
+If time length is 16, time step is 4, time stride is 2, dataset is merged as below:
 
 ```
  0, 1, 2, 3 -> 0
@@ -82,7 +82,7 @@ if time length is 16, time step is 4, time stride is 2, dataset is merged as bel
 
 ## Batch duplication example
 
-original training pseudocode is:
+Original training pseudocode is:
 ```python
 for epoch in range(epochs):
 	sample = gen_sample()
@@ -90,7 +90,7 @@ for epoch in range(epochs):
 		model.train(batch)
 ```
 
-training pseudocode with batch duplication is:
+Training pseudocode with batch duplication is:
 ```python
 for epoch in range(epochs):
 	sample = gen_sample()
@@ -99,4 +99,4 @@ for epoch in range(epochs):
 			model.train(batch)
 ```
 
-You can reuse sample by using batdup hyperparameter. this is implemented due to slow sampling process.
+You can reuse sample by using batdup hyperparameter. This is implemented due to slow sampling process.
