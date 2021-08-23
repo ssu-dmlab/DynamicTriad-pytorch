@@ -8,7 +8,7 @@ def main(
 	dir='datasets',
 	dataset='academic',
 	device='cpu',
-	epochs=10,
+	epochs=300,
 	lr=0.1,
 	time_length=36,
 	time_step=4,
@@ -17,7 +17,7 @@ def main(
 	beta_triad=1.0,
 	beta_smooth=1.0,
 	batchsize=10000,
-	batdup=1,
+	batdup=5,
 	batchtqdm=True,
 	mode='link_reconstruction',
 ):

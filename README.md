@@ -54,7 +54,7 @@ python src/main.py \
 | `dir` | Directory where dataset is located | `datasets`|
 |`dataset`| Dataset to train (among `academic`, `academic_toy`, `enron`) | `academic`|
 | `device` | Torch device to use (`cpu` or `cuda`) | `cpu`|
-| `epochs` | Number of training epochs | 10 |
+| `epochs` | Number of training epochs | 300 |
 | `lr` | Learning Rate | 0.1 |
 | `time_length` | Time length to load from raw dataset | 36 |
 | `time_step` | Time step to merge from raw dataset | 4 |
@@ -63,7 +63,7 @@ python src/main.py \
 | `beta_triad` | Hyperparameter for triad loss | 1.0 |
 | `beta_smooth` | Hyperparameter for smoothness loss | 1.0 |
 | `batchsize` | Batch size | 10000 |
-| `batdup` | Batch duplication, hyperparameter to reuse same sample | 1 |
+| `batdup` | Batch duplication, hyperparameter to reuse same sample | 5 |
 | `mode` | Evaluation mode: `{,change_}link_{reconstruction,prediction}` | `link_reconstruction` |
 
 ## Merge example
