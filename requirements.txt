@@ -1,9 +1,8 @@
 graph_tools
 loguru
-torch
 tqdm
 sklearn
 fire
-pandas
-gensim
-nltk
+
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==1.9.0+cu111
