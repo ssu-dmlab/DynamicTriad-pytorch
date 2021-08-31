@@ -19,24 +19,6 @@ class Dataset():
 		self.vertices = list(self._vertices)
 		self.vertex2index = {n: i for i, n in enumerate(self.vertices)}
 
-		self.feature_dimension = None
-
-		if load_feature:
-			for t in range(time):
-				graph = self.graphs[t]
-				filename = '{}/{}.feature'.format(dirname, t)
-				features, dimension = self.load_feature(filename)
-
-				if self.feature_dimension is None:
-					self.feature_dimension = dimension
-				else:
-					assert self.feature_dimension == dimension
-
-				for vertex, feature in features.items():
-					if not graph.has_vertex(vertex):
-						graph.add_vertex(vertex)
-					graph.set_vertex_attribute(vertex, 'feature', feature)
-
 	def __len__(self):
 		return self.graphs.__len__()
 
@@ -95,20 +77,3 @@ class Dataset():
 					ret.set_edge_weight(v0, v1, new_w)
 
 		return ret
-
-	def load_feature(self, filename):
-		file = open(filename, 'r')
-		dimension = int(file.readline())
-		lines = file.readlines()
-		features = {}
-
-		for line in file.readlines():
-			fields = line.split(' ')
-			vertex = fields[0]
-			feature = [float(f) for f in fields[1:]]
-			assert len(feature) == dimension
-			feature = np.array(feature)
-			features[vertex] = feature
-
-		file.close()
-		return features, dimension

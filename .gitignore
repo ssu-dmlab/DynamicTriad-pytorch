@@ -11,7 +11,3 @@ __pycache__/
 
 # for experiments
 src/experiments/
-
-# raw data
-datasets/emails.csv
-datasets/enron
