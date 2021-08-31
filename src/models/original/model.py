@@ -34,8 +34,8 @@ class Model(torch.nn.Module):
 		self.beta = Variable(beta, requires_grad=True)
 
 		self.params = {}
-		self.params['beta_triad'] = self.params.get('beta_triad', 1)
-		self.params['beta_smooth'] = self.params.get('beta_smooth', 1)
+		self.params['beta_triad'] = params.get('beta_triad', 1)
+		self.params['beta_smooth'] = params.get('beta_smooth', 1)
 
 	def forward(self, data, weight, triag_int, triag_float):
 		"""
