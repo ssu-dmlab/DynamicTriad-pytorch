@@ -47,11 +47,11 @@ def main(
 		logger.error("no such model {}".format(model))
 		return None
 
-	trained_model = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize, batdup=batdup, batchtqdm=batchtqdm)
+	trained_model, history = trainer.train(lr=lr, epochs=epochs, batchsize=batchsize, batdup=batdup, batchtqdm=batchtqdm)
 	f1score = evaluator.evaluate(trained_model, dataset)
 
-	logger.info(f1score)
-	return f1score
+	logger.info('f1 score is {}'.format(f1score))
+	return f1score, history
 
 if __name__ == "__main__":
 	Fire(main)

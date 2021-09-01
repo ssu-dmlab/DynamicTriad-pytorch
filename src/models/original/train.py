@@ -20,6 +20,8 @@ class Trainer:
 		total_batches = math.ceil(positive_samples.shape[0]/batchsize)
 		logger.debug('total_batches: {}'.format(total_batches))
 
+		history = []
+
 		pbar = tqdm(range(epochs), position=0, leave=False, desc='epoch')
 		for epoch in pbar:
 			negative_social_homophily_samples = self.gen_social_homophily_samples(positive_samples, negdup=negdup)
@@ -69,11 +71,13 @@ class Trainer:
 
 			logger.info('Epoch {:02}: {:.4} training loss'.format(epoch, ave_loss.item()))
 			if self.evaluator is not None:
-				logger.info('f1 score is {}'.format(self.evaluator.evaluate(self.model, self.dataset)))
+				f1score = self.evaluator.evaluate(self.model, self.dataset)
+				logger.info('f1 score is {}'.format(f1score))
+				history.append(f1score)
 
 		pbar.close()
 
-		return self.model
+		return self.model, history
 
 	def gen_batches(self, datas, weight, emcoef_int, emcoef_float, batchsize):
 		curstart = 0
