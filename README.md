@@ -52,7 +52,7 @@ python src/main.py \
 |:--- | :--- | :---: |
 | `model` | Which model to use (only `original` is implemented currently) | `original` |
 | `dir` | Directory where dataset is located | `datasets`|
-|`dataset`| Dataset to train (among `academic`, `academic_toy`, `enron`) | `academic`|
+|`dataset`| Dataset to train (among `academic`, `academic_toy`) | `academic`|
 | `device` | Torch device to use (`cpu` or `cuda`) | `cpu`|
 | `epochs` | Number of training epochs | 300 |
 | `lr` | Learning Rate | 0.1 |
