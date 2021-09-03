@@ -5,7 +5,6 @@ This repo is pytorch version of [DynamicTriad](https://github.com/luckiezhou/Dyn
 
 * academic
 * academic_toy
-* enron
 
 Academic and academic_toy dataset has been obtained by running
 [academic2adjlist.py](https://github.com/luckiezhou/DynamicTriad/blob/master/scripts/academic2adjlist.py)
