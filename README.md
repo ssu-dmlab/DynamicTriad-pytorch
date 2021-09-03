@@ -11,10 +11,6 @@ Academic and academic_toy dataset has been obtained by running
 [academic2adjlist.py](https://github.com/luckiezhou/DynamicTriad/blob/master/scripts/academic2adjlist.py)
 and enron dataset preprocessing method is proposed by us.
 
-Note: Enron dataset is too big to upload to repository so there is only preprocessing source code.
-To use enron dataset download [emails.csv](https://www.kaggle.com/wcukierski/enron-email-dataset/download)
-into `dataset` and run `datasets/enron_preprocessor.py` to generate dataset.
-
 ## Differences between original implementation and this
 
 | **Differences** | **Original** | **this** |
