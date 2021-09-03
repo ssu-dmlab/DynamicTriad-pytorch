@@ -9,7 +9,7 @@ This repo is pytorch version of [DynamicTriad](https://github.com/luckiezhou/Dyn
 
 Academic and academic_toy dataset has been obtained by running
 [academic2adjlist.py](https://github.com/luckiezhou/DynamicTriad/blob/master/scripts/academic2adjlist.py)
-and enron dataset preprocessing method is proposed by us.
+on the original repository.
 
 ## Differences between original implementation and this
 
@@ -48,7 +48,7 @@ python src/main.py \
 |:--- | :--- | :---: |
 | `model` | Which model to use (only `original` is implemented currently) | `original` |
 | `dir` | Directory where dataset is located | `datasets`|
-|`dataset`| Dataset to train (among `academic`, `academic_toy`) | `academic`|
+|`dataset`| Dataset to train (`academic` or `academic_toy`) | `academic`|
 | `device` | Torch device to use (`cpu` or `cuda`) | `cpu`|
 | `epochs` | Number of training epochs | 300 |
 | `lr` | Learning Rate | 0.1 |
