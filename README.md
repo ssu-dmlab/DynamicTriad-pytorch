@@ -59,7 +59,7 @@ python src/main.py \
 | `beta_smooth` | Hyperparameter for smoothness loss | 1.0 |
 | `batchsize` | Batch size | 10000 |
 | `batdup` | Batch duplication, hyperparameter to reuse same sample | 5 |
-| `mode` | Evaluation mode: `{,change_}link_{reconstruction,prediction}` | `link_reconstruction` |
+| `mode` | Evaluation mode: `link_{reconstruction,prediction}` | `link_reconstruction` |
 
 ## Merge example
 
@@ -101,5 +101,3 @@ You can reuse sample by using batdup hyperparameter. This is implemented due to 
 | :--- | :---: | :---: |
 | **link reconstruction** | 0.985 | 0.963 |
 | **link prediction** | 0.836 | 0.949 |
-| **change link reconstruction** | 0.925 | 0.770 |
-| **change link prediction** | 0.924 | 0.735 |
