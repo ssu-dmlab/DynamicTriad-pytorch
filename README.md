@@ -20,7 +20,7 @@ on the original repository.
 | multiprocessing for sampling | yes | no |
 | batch duplication | no | yes |
 | vertex label | yes | no |
-| evaluation tasks | 6 | 4 |
+| evaluation tasks | 6 | 2 |
 
 ## Usage
 
