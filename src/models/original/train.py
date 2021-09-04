@@ -6,6 +6,10 @@ from tqdm.auto import tqdm
 from loguru import logger
 from models.original.model import Model
 
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/core/algorithm/samplers/pos_neg.py
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/core/algorithm/samplers/pos_neg_tri.py
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/core/algorithm/dynamic_triad.py
+
 class Trainer:
 	def __init__(self, model, dataset, device='cpu', evaluator=None):
 		self.model = model

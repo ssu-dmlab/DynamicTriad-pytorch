@@ -2,6 +2,10 @@ import graph_tools as gt
 from loguru import logger
 import numpy as np
 
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/core/dataset/dataset_utils.py
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/core/graph/graph.h
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/core/graph/_test_graph.cpp
+
 class Dataset():
 	def __init__(self, dirname, time, step=1, stride=1, load_feature=False):
 		self.graphs = []

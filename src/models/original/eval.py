@@ -5,6 +5,10 @@ from sklearn.metrics import f1_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
 
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/scripts/stdtests.py
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/core/algorithm/embutils.py
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/core/dataset/dataset_utils.py
+
 class Evaluator:
 	def __init__(self, mode='link_reconstruction'):
 		if mode == 'link_reconstruction':

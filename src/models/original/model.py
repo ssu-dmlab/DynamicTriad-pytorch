@@ -3,6 +3,8 @@ import numpy as np
 from torch.autograd import Variable
 from loguru import logger
 
+# this code refers https://github.com/luckiezhou/DynamicTriad/blob/master/core/algorithm/dynamic_triad.py
+
 class Model(torch.nn.Module):
 	def __init__(
 		self,
