@@ -97,7 +97,7 @@ for epoch in range(epochs):
 You can reuse sample by using batdup hyperparameter. This is implemented due to slow sampling process.
 
 ## Evaluation results
-| **mode** | **original** | **this** |
-| :--- | :---: | :---: |
-| **link reconstruction** | 0.985 | 0.963 |
-| **link prediction** | 0.836 | 0.949 |
+| **mode** | **original(paper)** | **this(mean)** | **this(std)** |
+| :--- | :---: | :---: | :---: |
+| **link reconstruction** | 0.985 | 0.958 | 0.0002 |
+| **link prediction** | 0.836 | 0.949 | 0.0002 |
