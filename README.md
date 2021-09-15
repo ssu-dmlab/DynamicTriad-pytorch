@@ -1,31 +1,35 @@
 # DynamicTriad-pytorch
-This repo is pytorch version of [DynamicTriad](https://github.com/luckiezhou/DynamicTriad).
+This repository aims to implement and reproduce **DynamicTriad** using PyTorch. 
+**DynamicTriad** has been proposed in the paper "Dynamic Network Embedding by Modelling Triadic Closure Process (AAAI 2018)", and its original implementation is [here](https://github.com/luckiezhou/DynamicTriad) implemented in TensorFlow. 
 
-## Dataset
+## Datasets
+We use the following datasets to reproduce the experimental results shown in the paper. 
 
-* academic
-* academic_toy
+* Academic
+* Academic_toy
 
-Academic and academic_toy dataset has been obtained by running
-[academic2adjlist.py](https://github.com/luckiezhou/DynamicTriad/blob/master/scripts/academic2adjlist.py)
-on the original repository.
+The Academic and Academic_toy datasets have been obtained by running [academic2adjlist.py](https://github.com/luckiezhou/DynamicTriad/blob/master/scripts/academic2adjlist.py)
+in the original repository.
 
-## Differences between original implementation and this
+## Differences between the original implementation and this
+We summarize the differences between the original repository and this. 
+We mainly focus on writing pythonic codes for the method using PyTorch.
 
-| **Differences** | **Original** | **this** |
+| **Item** | **Original** | **This** |
 | :--- | :--- | :--- |
-| python version | 2 | 3 |
-| ML library | tensorflow | pytorch |
-| graph representation | implemented by C++ | uses python library |
-| multiprocessing for sampling | yes | no |
-| batch duplication | no | yes |
-| vertex label | yes | no |
-| evaluation tasks | 6 | 2 |
+| Python version | 2 | 3 |
+| ML library | TensorFlow | PyTorch |
+| Graph implementation | C++ | Python |
+| Multiprocessing for sampling | Yes | No |
+| Batch duplication | No | Yes |
+| Vertex label | Yes | No |
 
 ## Usage
 
+You can run this project to simply type the following in your terminal:
+
 ```shell
-python src/main.py \
+python -m src.main \
 	--model=original \
 	--dir=${DIR} \
 	--dataset=${DATASET_NAME} \
@@ -50,7 +54,7 @@ python src/main.py \
 |`dataset`| Dataset to train (`academic` or `academic_toy`) | `academic`|
 | `device` | Torch device to use (`cpu` or `cuda`) | `cpu`|
 | `epochs` | Number of training epochs | 300 |
-| `lr` | Learning Rate | 0.1 |
+| `lr` | Learning rate | 0.1 |
 | `time_length` | Time length to load from raw dataset | 36 |
 | `time_step` | Time step to merge from raw dataset | 4 |
 | `time_stride` | Time stride to jump time when merge from raw dataset | 2 |
@@ -97,7 +101,11 @@ for epoch in range(epochs):
 You can reuse sample by using batdup hyperparameter. This is implemented due to slow sampling process.
 
 ## Evaluation results
-| **mode** | **original(paper)** | **this(mean)** | **this(std)** |
-| :--- | :---: | :---: | :---: |
-| **link reconstruction** | 0.985 | 0.958 | 0.0002 |
-| **link prediction** | 0.836 | 0.949 | 0.0002 |
+
+We have tested this repository on the following tasks compared to the original results. 
+We report average accuracies with their standard deviations of 10 runs. 
+
+| **Mode** | **Original (paper)** | **This** |
+| :--- | :---: | :---: |
+| **Link reconstruction** | 0.985 | 0.958±0.0002 |
+| **Link prediction** | 0.836 | 0.949±0.0002 |
