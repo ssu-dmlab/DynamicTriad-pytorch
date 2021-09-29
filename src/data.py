@@ -62,6 +62,20 @@ class Dataset():
 		f.close()
 		return graph
 
+	'''
+	* Input: set of time-stamped graphs
+	* Output: a merged graph
+	* How to merge (example):
+		- If the time length is 16, the time step is 4, and the time stride is 2, then the given dataset is merged as below:
+	 		
+		 merge({ 0, 1, 2, 3}) -> 0
+		 merge({ 2, 3, 4, 5}) -> 1
+		 merge({ 4, 5, 6, 7}) -> 2
+		 merge({ 6, 7, 8, 9}) -> 3
+		 merge({ 8, 9,10,11}) -> 4
+		 merge({10,11,12,13}) -> 5
+		 merge({12,13,14,15}) -> 6
+	'''
 	def merge(self, graphs):
 		ret = gt.Graph(directed=False)
 
