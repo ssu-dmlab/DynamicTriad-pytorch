@@ -65,20 +65,6 @@ python -m src.main \
 | `batdup` | Batch duplication, hyperparameter to reuse same sample | 5 |
 | `mode` | Evaluation mode: `link_{reconstruction,prediction}` | `link_reconstruction` |
 
-## Merge example
-
-If time length is 16, time step is 4, time stride is 2, dataset is merged as below:
-
-```
- 0, 1, 2, 3 -> 0
- 2, 3, 4, 5 -> 1
- 4, 5, 6, 7 -> 2
- 6, 7, 8, 9 -> 3
- 8, 9,10,11 -> 4
-10,11,12,13 -> 5
-12,13,14,15 -> 6
-```
-
 ## Batch duplication example
 
 Original training pseudocode is:
