@@ -11,19 +11,6 @@ We use the following datasets to reproduce the experimental results shown in the
 The Academic and Academic_toy datasets have been obtained by running [academic2adjlist.py](https://github.com/luckiezhou/DynamicTriad/blob/master/scripts/academic2adjlist.py)
 in the original repository.
 
-## Differences between the original implementation and this
-We summarize the differences between the original repository and this. 
-We mainly focus on writing pythonic codes for the method using PyTorch.
-
-| **Item** | **Original** | **This** |
-| :--- | :--- | :--- |
-| Python version | 2 | 3 |
-| ML library | TensorFlow | PyTorch |
-| Graph implementation | C++ | Python |
-| Multiprocessing for sampling | Yes | No |
-| Batch duplication | No | Yes |
-| Vertex label | Yes | No |
-
 ## Usage
 
 You can run this project to simply type the following in your terminal:
@@ -65,26 +52,44 @@ python -m src.main \
 | `batdup` | Batch duplication, hyperparameter to reuse same sample | 5 |
 | `mode` | Evaluation mode: `link_{reconstruction,prediction}` | `link_reconstruction` |
 
-## Batch duplication example
+## Differences between the original implementation and this
+We summarize the differences between the original repository and this. 
+We mainly focus on writing pythonic codes for the method using PyTorch.
 
-Original training pseudocode is:
+| **Item** | **Original** | **This** |
+| :--- | :--- | :--- |
+| Python version | 2 | 3 |
+| ML library | TensorFlow | PyTorch |
+| Graph implementation | C++ | Python |
+| Multiprocessing for sampling | Yes | No |
+| Batch duplication | No | Yes |
+| Vertex label | Yes | No |
+
+
+### Batch duplication
+In this repository, we introduce `batch duplication` to boost up the speed of the training procedure. 
+The main idea of the batch duplication is to use sampled data multiple times to produce batch data without repeating the sampling for each step. 
+For example, the pseudocode of the original training procedure is as follows:
+
 ```python
 for epoch in range(epochs):
-	sample = gen_sample()
-	for batch in gen_batch(sample):
-		model.train(batch)
+    sample = gen_sample()
+    for batch in gen_batch(sample):
+        model.train(batch)
 ```
+In the above code, `gen_sample()` is time-consuming, thereby slowing down the training phase overall. 
+To accelerate this phase, the batch duplicated code is written as follows:
 
-Training pseudocode with batch duplication is:
 ```python
 for epoch in range(epochs):
-	sample = gen_sample()
-	for _ in range(batdup):
-		for batch in gen_batch(sample):
-			model.train(batch)
+    sample = gen_sample()
+    for _ in range(batdup):   # batch duplication
+        for batch in gen_batch(sample):
+            model.train(batch)
 ```
-
-You can reuse sample by using batdup hyperparameter. This is implemented due to slow sampling process.
+Note that `sample` is reused `batdup` times, which is controlled by a user as a hyperparameter. 
+With a reduced `epochs`, the batch duplication can decrease the training time.
+(Of course, there is a trade-off between efficiency and accuracy because the batch duplication could harm the randomness of the sampling, but its effect seems scant as shown in the below). 
 
 ## Evaluation results
 
