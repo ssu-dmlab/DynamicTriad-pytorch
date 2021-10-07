@@ -90,6 +90,7 @@ for epoch in range(epochs):
 Note that `sample` is reused `batdup` times, which is controlled by a user as a hyperparameter. 
 With a reduced `epochs`, the batch duplication can decrease the training time.
 (Of course, there is a trade-off between efficiency and accuracy because the batch duplication could harm the randomness of the sampling, but its effect seems scant as shown in the below). 
+If `batdup` is set to `1`, then the batch duplicated version is the same as the original one.
 
 ## Evaluation results
 
