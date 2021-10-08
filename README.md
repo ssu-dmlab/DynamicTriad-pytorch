@@ -1,6 +1,6 @@
 # DynamicTriad-pytorch
 This repository aims to implement and reproduce **DynamicTriad** using PyTorch. 
-**DynamicTriad** has been proposed in the paper "Dynamic Network Embedding by Modelling Triadic Closure Process (AAAI 2018)", and its original implementation is [here](https://github.com/luckiezhou/DynamicTriad) implemented in TensorFlow. 
+**DynamicTriad** has been proposed in the paper "Dynamic network embedding by modeling triadic closure process (AAAI 2018)", and its original implementation is [here](https://github.com/luckiezhou/DynamicTriad) implemented in TensorFlow. 
 
 ## Datasets
 We use the following datasets to reproduce the experimental results shown in the paper. 
@@ -101,3 +101,6 @@ We report average accuracies with their standard deviations of 10 runs.
 | :--- | :---: | :---: |
 | **Link reconstruction** | 0.985 | 0.958±0.0002 |
 | **Link prediction** | 0.836 | 0.949±0.0002 |
+
+## References
+[1] Zhou, L., Yang, Y., Ren, X., Wu, F., & Zhuang, Y. (2018, April). Dynamic network embedding by modeling triadic closure process. In Proceedings of the AAAI Conference on Artificial Intelligence (Vol. 32, No. 1).
