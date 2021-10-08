@@ -2,15 +2,6 @@
 This repository aims to implement and reproduce **DynamicTriad** using PyTorch. 
 **DynamicTriad** has been proposed in the paper "Dynamic network embedding by modeling triadic closure process (AAAI 2018)", and its original implementation is [here](https://github.com/luckiezhou/DynamicTriad) implemented in TensorFlow. 
 
-## Datasets
-We use the following datasets to reproduce the experimental results shown in the paper. 
-
-* Academic
-* Academic_toy
-
-The Academic and Academic_toy datasets have been obtained by running [academic2adjlist.py](https://github.com/luckiezhou/DynamicTriad/blob/master/scripts/academic2adjlist.py)
-in the original repository.
-
 ## Usage
 
 You can run this project to simply type the following in your terminal:
@@ -91,6 +82,16 @@ Note that `sample` is reused `batdup` times, which is controlled by a user as a 
 With a reduced `epochs`, the batch duplication can decrease the training time.
 (Of course, there is a trade-off between efficiency and accuracy because the batch duplication could harm the randomness of the sampling, but its effect seems scant as shown in the below). 
 If `batdup` is set to `1`, then the batch duplicated version is the same as the original one.
+
+## Datasets
+We use the following datasets to reproduce the experimental results shown in the paper. 
+
+* Academic
+* Academic_toy
+
+The Academic and Academic_toy datasets have been obtained by running [academic2adjlist.py](https://github.com/luckiezhou/DynamicTriad/blob/master/scripts/academic2adjlist.py)
+in the original repository.
+
 
 ## Evaluation results
 
