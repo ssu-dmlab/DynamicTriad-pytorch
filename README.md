@@ -2,6 +2,9 @@
 This repository aims to implement and reproduce **DynamicTriad** using PyTorch. 
 **DynamicTriad** has been proposed in the paper "Dynamic network embedding by modeling triadic closure process (AAAI 2018)", and its original implementation is [here](https://github.com/luckiezhou/DynamicTriad) implemented in TensorFlow. 
 
+This repository is developed by [JongWhi Lee](https://github.com/dev-jwel), and commented by [Jinhong Jung](https://jinhongjung.github.io/).
+
+
 ## Usage
 
 You can run this project to simply type the following in your terminal:
